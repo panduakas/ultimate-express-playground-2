@@ -3,6 +3,8 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -13,5 +15,5 @@
     "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "src/app/tests/**/*.ts"]
+  "exclude": ["node_modules", "dist", "src/app/modules/**/tests/**/*.ts"]
 }
