@@ -2,7 +2,6 @@
  * OHLCV repository
  */
 
-import { parseQuery } from '../../common/http/decorators.js';
 import { OhlcvRowDto } from '../dto/market.dto.js';
 import { Ohlcv, type OhlcvCreationAttributes } from '../entities/ohlcv.entity.js';
 

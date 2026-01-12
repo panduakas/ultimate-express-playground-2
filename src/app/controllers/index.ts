@@ -1,9 +1,8 @@
 import type { Request, Response } from 'express';
-import type { AnyZodObject, ZodTypeAny } from 'zod';
 
+import { AiController } from '../modules/ai/controllers/ai.controller.js';
 import { getControllerRoutes } from '../modules/common/http/decorators.js';
 import { createApiRouter } from '../modules/common/http/router.js';
-import { AiController } from '../modules/ai/controllers/ai.controller.js';
 import { IndicatorController } from '../modules/indicators/controllers/indicator.controller.js';
 import { MarketController } from '../modules/market-data/controllers/market.controller.js';
 import { SignalsController } from '../modules/signals/controllers/signals.controller.js';
@@ -30,7 +29,7 @@ export const registerControllers = (app: App): void => {
     const routes = getControllerRoutes(c.constructor);
     for (const r of routes) {
       const handler = (
-        (c as Record<string | symbol, unknown>)[r.handlerName] as (
+        ((c as unknown) as Record<string | symbol, unknown>)[r.handlerName] as (
           req: Request,
           res: Response
         ) => Promise<void>
@@ -39,8 +38,8 @@ export const registerControllers = (app: App): void => {
         router.get(
           r.path,
           {
-            query: (r.query as AnyZodObject | undefined) ?? undefined,
-            response: r.response as ZodTypeAny,
+            query: r.query ?? undefined,
+            response: r.response ?? undefined,
             description: r.description
           },
           handler
@@ -49,8 +48,8 @@ export const registerControllers = (app: App): void => {
         router.post(
           r.path,
           {
-            body: (r.body as ZodTypeAny | undefined) ?? undefined,
-            response: r.response as ZodTypeAny,
+            body: r.body ?? undefined,
+            response: r.response ?? undefined,
             description: r.description
           },
           handler
