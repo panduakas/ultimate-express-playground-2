@@ -1,19 +1,24 @@
-import { ZodSchema } from 'zod';
+import { plainToInstance } from 'class-transformer';
+import { validateSync } from 'class-validator';
 
 export class BaseDto {
-  static schema: ZodSchema;
-
-  constructor(data?: any) {
-    if (data) {
+  constructor(data?: unknown) {
+    if (data && typeof data === 'object') {
       Object.assign(this, data);
     }
   }
 
-  static sanitize<T>(this: { new (...args: any[]): T; schema: ZodSchema }, data: unknown): T {
-    const schema = this.schema;
-    if (!schema) {
-      throw new Error('Schema not defined for this DTO');
+  static sanitize<T>(this: { new (...args: any[]): T }, data: unknown): T {
+    const inst = plainToInstance(this as any, (data ?? {}) as object, {
+      enableImplicitConversion: true
+    }) as T;
+    const errs = validateSync(inst as object, {
+      whitelist: true,
+      forbidUnknownValues: false
+    });
+    if (errs.length) {
+      throw new Error('Validation error');
     }
-    return schema.parse(data);
+    return inst;
   }
 }
