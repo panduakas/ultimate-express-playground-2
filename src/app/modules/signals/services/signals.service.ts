@@ -3,17 +3,17 @@
  */
 import { logger } from '../../../../logger.js';
 import { ENV } from '../../../../variables.js';
-import { Signal, type SignalCreationAttributes } from '../entities/signal.entity.js';
-import { OhlcvRepository } from '../../market-data/repositories/ohlcv.repository.js';
 import { predictNextPrice } from '../../ai/services/ai.service.js';
+import { OhlcvRepository } from '../../market-data/repositories/ohlcv.repository.js';
 import { runStrategies } from '../../strategies/services/strategies.service.js';
-
-import { CalculateSignalDto } from '../dto/signal.dto.js';
+import { Signal, type SignalCreationAttributes } from '../entities/signal.entity.js';
 
 export class SignalsService {
   constructor(private readonly ohlcvRepo: OhlcvRepository = new OhlcvRepository()) {}
 
-  async calculateAndStoreSignal(params: CalculateSignalDto = {}): Promise<void> {
+  async calculateAndStoreSignal(
+    params: { symbol?: string; timeframe?: number } = {}
+  ): Promise<void> {
     const symbol = params.symbol ?? ENV.INDODAX_PAIR;
     const timeframeMin = params.timeframe ?? ENV.INDODAX_TIMEFRAME_MIN;
 
@@ -56,7 +56,9 @@ export class SignalsService {
   }
 }
 
-export const calculateAndStoreSignal = async (params: CalculateSignalDto = {}): Promise<void> => {
+export const calculateAndStoreSignal = async (
+  params: { symbol?: string; timeframe?: number } = {}
+): Promise<void> => {
   const svc = new SignalsService();
   return svc.calculateAndStoreSignal(params);
 };

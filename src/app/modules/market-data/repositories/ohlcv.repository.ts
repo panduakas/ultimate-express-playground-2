@@ -2,10 +2,19 @@
  * OHLCV repository
  */
 
-import { OhlcvRowDto } from '../dto/market.dto.js';
 import { Ohlcv, type OhlcvCreationAttributes } from '../entities/ohlcv.entity.js';
 
-type OhlcvDTO = OhlcvRowDto;
+export type OhlcvRow = {
+  id?: number;
+  symbol: string;
+  timeframeMin: number;
+  time: Date;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+};
 
 export class OhlcvRepository {
   async upsertOhlcv(rows: readonly OhlcvCreationAttributes[]): Promise<void> {
@@ -16,7 +25,7 @@ export class OhlcvRepository {
     });
   }
 
-  async getLatestOhlcv(symbol: string, timeframeMin: number, limit: number): Promise<OhlcvDTO[]> {
+  async getLatestOhlcv(symbol: string, timeframeMin: number, limit: number): Promise<OhlcvRow[]> {
     const res = await Ohlcv.findAll({
       where: { symbol, timeframeMin },
       order: [['time', 'DESC']],
@@ -45,7 +54,7 @@ export const getLatestOhlcv = async (
   symbol: string,
   timeframeMin: number,
   limit: number
-): Promise<OhlcvDTO[]> => {
+): Promise<OhlcvRow[]> => {
   const repo = new OhlcvRepository();
   return repo.getLatestOhlcv(symbol, timeframeMin, limit);
 };

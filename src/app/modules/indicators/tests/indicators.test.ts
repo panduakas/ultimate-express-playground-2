@@ -3,8 +3,8 @@ import { describe, expect, test } from '@jest/globals';
 import { ENV } from '../../../../variables.js';
 import { connectDatabase } from '../../../config/database.config.js';
 import { upsertOhlcv } from '../../market-data/repositories/ohlcv.repository.js';
-import { generateIndicators } from '../services/indicators.service.js';
 import { getIndicatorSeries } from '../repositories/indicator.repository.js';
+import { generateIndicators } from '../services/indicators.service.js';
 
 describe('Indicators', () => {
   test('SMA/EMA/RSI generated', async () => {

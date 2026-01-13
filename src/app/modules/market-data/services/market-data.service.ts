@@ -5,10 +5,8 @@ import axios from 'axios';
 
 import { logger } from '../../../../logger.js';
 import { ENV } from '../../../../variables.js';
+import { getCache, setCache } from '../../../shared/services/cache.service.js';
 import { OhlcvRepository, upsertOhlcv } from '../repositories/ohlcv.repository.js';
-import { getCache, setCache } from '../../common/services/cache.service.js';
-
-import { SyncOhlcvDto } from '../dto/market.dto.js';
 
 interface IndodaxHistoryResponse {
   s: string;
@@ -28,7 +26,7 @@ const _buildHistoryUrl = (from: number, to: number, symbol: string, tf: number):
 export class MarketDataService {
   constructor(private readonly ohlcvRepo: OhlcvRepository = new OhlcvRepository()) {}
 
-  async syncOhlcv(params: SyncOhlcvDto = {}): Promise<void> {
+  async syncOhlcv(params: { symbol?: string; timeframe?: number } = {}): Promise<void> {
     const lastSync = await getCache('market:last_sync');
     if (lastSync) {
       return;
@@ -65,7 +63,9 @@ export class MarketDataService {
   }
 }
 
-export const syncOhlcv = async (params: SyncOhlcvDto = {}): Promise<void> => {
+export const syncOhlcv = async (
+  params: { symbol?: string; timeframe?: number } = {}
+): Promise<void> => {
   const svc = new MarketDataService();
   return svc.syncOhlcv(params);
 };

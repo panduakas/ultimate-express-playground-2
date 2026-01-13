@@ -1,11 +1,11 @@
 import { describe, expect, test, jest, afterEach } from '@jest/globals';
 
-import * as ai from '../../ai/services/ai.service.js';
 import { ENV } from '../../../../variables.js';
-import { upsertOhlcv } from '../../market-data/repositories/ohlcv.repository.js';
-import { calculateAndStoreSignal } from '../services/signals.service.js';
-import { Signal } from '../entities/signal.entity.js';
 import { connectDatabase } from '../../../config/database.config.js';
+import * as ai from '../../ai/services/ai.service.js';
+import { upsertOhlcv } from '../../market-data/repositories/ohlcv.repository.js';
+import { Signal } from '../entities/signal.entity.js';
+import { calculateAndStoreSignal } from '../services/signals.service.js';
 
 describe('Signal Engine', () => {
   afterEach(() => {
