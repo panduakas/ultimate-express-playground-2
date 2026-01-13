@@ -3,9 +3,9 @@ import axios from 'axios';
 
 import { ENV } from '../../../../variables.js';
 import { connectDatabase } from '../../../config/database.config.js';
-import { syncOhlcv } from '../services/market-data.service.js';
-import { Ohlcv } from '../entities/ohlcv.entity.js';
 import { redis } from '../../../config/redis.config.js';
+import { Ohlcv } from '../entities/ohlcv.entity.js';
+import { syncOhlcv } from '../services/market-data.service.js';
 
 describe('Market Data', () => {
   afterEach(() => {
@@ -15,7 +15,7 @@ describe('Market Data', () => {
   test('Sync OHLCV from mocked API', async () => {
     await connectDatabase();
     jest.spyOn(redis, 'get').mockResolvedValue(null);
-    jest.spyOn(redis, 'set').mockResolvedValue('OK' as any);
+    jest.spyOn(redis, 'set').mockResolvedValue('OK' as unknown as string);
     const now = Math.floor(Date.now() / 1000);
     jest.spyOn(axios, 'get').mockResolvedValue({
       data: {
@@ -27,7 +27,7 @@ describe('Market Data', () => {
         c: [115, 108],
         v: [1, 2]
       }
-    } as any);
+    } as unknown as { data: unknown });
     await syncOhlcv();
     const count = await Ohlcv.count({
       where: { symbol: ENV.INDODAX_PAIR, timeframeMin: ENV.INDODAX_TIMEFRAME_MIN }

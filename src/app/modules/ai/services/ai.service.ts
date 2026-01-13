@@ -1,16 +1,14 @@
-import mysql from 'mysql2/promise';
-
 import { ENV } from '../../../../variables.js';
 import { connectMindsDB } from '../../../config/mindsdb.config.js';
 export { connectMindsDB } from '../../../config/mindsdb.config.js';
 import { MindsDbRepository } from '../repositories/mindsdb.repository.js';
 
-import { TrainModelDto, PredictPriceDto } from '../dto/ai.dto.js';
-
 export class AiService {
   constructor(private readonly mindsRepo: MindsDbRepository = new MindsDbRepository()) {}
 
-  async trainMindsDbModel(params: TrainModelDto = {}): Promise<void> {
+  async trainMindsDbModel(
+    params: { connection?: import('mysql2/promise').Connection } = {}
+  ): Promise<void> {
     const connection = params.connection ?? (await connectMindsDB());
     await this.mindsRepo.ensureIntegration(connection);
     await this.mindsRepo.createOrRetrainModel(connection);
@@ -20,7 +18,7 @@ export class AiService {
   }
 
   async predictNextPrice(
-    params: PredictPriceDto = {}
+    params: { connection?: import('mysql2/promise').Connection; symbol?: string } = {}
   ): Promise<{ predicted: number; confidence: number }> {
     const connection = params.connection ?? (await connectMindsDB());
     await this.mindsRepo.ensureIntegration(connection);
@@ -33,13 +31,15 @@ export class AiService {
   }
 }
 
-export const trainMindsDbModel = async (params: TrainModelDto = {}): Promise<void> => {
+export const trainMindsDbModel = async (
+  params: { connection?: import('mysql2/promise').Connection } = {}
+): Promise<void> => {
   const svc = new AiService();
   return svc.trainMindsDbModel(params);
 };
 
 export const predictNextPrice = async (
-  params: PredictPriceDto = {}
+  params: { connection?: import('mysql2/promise').Connection; symbol?: string } = {}
 ): Promise<{ predicted: number; confidence: number }> => {
   const svc = new AiService();
   return svc.predictNextPrice(params);

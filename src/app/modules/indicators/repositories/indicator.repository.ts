@@ -2,10 +2,16 @@
  * Indicator repository
  */
 
-import { IndicatorRowDto } from '../dto/indicator.dto.js';
 import { Indicator, type IndicatorCreationAttributes } from '../entities/indicator.entity.js';
 
-type IndicatorDTO = IndicatorRowDto;
+export type IndicatorRow = {
+  id?: number;
+  symbol: string;
+  timeframeMin: number;
+  time: Date;
+  name: string;
+  value: number;
+};
 
 export class IndicatorRepository {
   async upsertIndicators(rows: readonly IndicatorCreationAttributes[]): Promise<void> {
@@ -21,7 +27,7 @@ export class IndicatorRepository {
     timeframeMin: number,
     name: string,
     limit: number
-  ): Promise<IndicatorDTO[]> {
+  ): Promise<IndicatorRow[]> {
     const res = await Indicator.findAll({
       where: { symbol, timeframeMin, name },
       order: [['time', 'DESC']],
@@ -50,7 +56,7 @@ export const getIndicatorSeries = async (
   timeframeMin: number,
   name: string,
   limit: number
-): Promise<IndicatorDTO[]> => {
+): Promise<IndicatorRow[]> => {
   const repo = new IndicatorRepository();
   return repo.getIndicatorSeries(symbol, timeframeMin, name, limit);
 };

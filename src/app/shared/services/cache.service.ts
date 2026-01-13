@@ -1,7 +1,7 @@
 /**
  * Redis caching service
  */
-import { redis } from '../../../config/redis.config.js';
+import { redis } from '../../config/redis.config.js';
 
 export const getCache = async (key: string): Promise<string | null> => {
   const val = await redis.get(key);

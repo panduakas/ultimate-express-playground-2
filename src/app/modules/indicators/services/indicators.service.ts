@@ -2,10 +2,8 @@
  * Indicators calculation and storage
  */
 import { ENV } from '../../../../variables.js';
-import { IndicatorRepository } from '../repositories/indicator.repository.js';
 import { OhlcvRepository } from '../../market-data/repositories/ohlcv.repository.js';
-
-import { GenerateIndicatorsDto } from '../dto/indicator.dto.js';
+import { IndicatorRepository } from '../repositories/indicator.repository.js';
 
 const _sma = (values: readonly number[], period: number): number[] => {
   const out: number[] = [];
@@ -86,7 +84,7 @@ export class IndicatorService {
     private readonly indRepo: IndicatorRepository = new IndicatorRepository()
   ) {}
 
-  async generateIndicators(params: GenerateIndicatorsDto = {}): Promise<void> {
+  async generateIndicators(params: { symbol?: string; timeframe?: number } = {}): Promise<void> {
     const symbol = params.symbol ?? ENV.INDODAX_PAIR;
     const timeframeMin = params.timeframe ?? ENV.INDODAX_TIMEFRAME_MIN;
     const series = await this.ohlcvRepo.getLatestOhlcv(symbol, timeframeMin, 300);

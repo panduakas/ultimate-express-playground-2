@@ -5,13 +5,16 @@ import { ENV } from '../../../../variables.js';
 import { getIndicatorSeries } from '../../indicators/repositories/indicator.repository.js';
 import { getLatestOhlcv } from '../../market-data/repositories/ohlcv.repository.js';
 
-import { RunStrategiesDto } from '../dto/strategy.dto.js';
-
 export interface StrategyResult {
   name: string;
   score: number;
   signal: 'buy' | 'sell' | 'hold';
 }
+
+export type RunStrategiesParams = {
+  symbol?: string;
+  timeframe?: number;
+};
 
 const _signalFromScore = (score: number): 'buy' | 'sell' | 'hold' => {
   if (score > 0.2) return 'buy';
@@ -119,7 +122,7 @@ const _dynamicGrid = async (symbol: string, tf: number): Promise<StrategyResult>
 };
 
 export class StrategiesService {
-  async runStrategies(params: RunStrategiesDto = {}): Promise<StrategyResult[]> {
+  async runStrategies(params: RunStrategiesParams = {}): Promise<StrategyResult[]> {
     const symbol = params.symbol ?? ENV.INDODAX_PAIR;
     const timeframeMin = params.timeframe ?? ENV.INDODAX_TIMEFRAME_MIN;
 
@@ -138,7 +141,9 @@ export class StrategiesService {
   }
 }
 
-export const runStrategies = async (params: RunStrategiesDto = {}): Promise<StrategyResult[]> => {
+export const runStrategies = async (
+  params: RunStrategiesParams = {}
+): Promise<StrategyResult[]> => {
   const svc = new StrategiesService();
   return svc.runStrategies(params);
 };

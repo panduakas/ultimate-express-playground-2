@@ -2,8 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 
 import { ENV } from '../../../../variables.js';
 import { connectDatabase } from '../../../config/database.config.js';
-import { upsertOhlcv } from '../../market-data/repositories/ohlcv.repository.js';
 import { generateIndicators } from '../../indicators/services/indicators.service.js';
+import { upsertOhlcv } from '../../market-data/repositories/ohlcv.repository.js';
 import { runStrategies } from '../services/strategies.service.js';
 
 describe('Strategies', () => {
